@@ -1,0 +1,13 @@
+/*#F0F1FF is the light background color
+#5664F5 is the accent/button color #6790F5 is the hover color
+black for text white for background*/
+
+.no-scroll-combo-box .scroll-bar {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+    -fx-scale-x: 0;
+}
+
+.no-scroll-combo-box .list-view {
+    -fx-pref-height: 78;
+} 
