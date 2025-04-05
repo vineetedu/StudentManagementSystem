@@ -5,4 +5,8 @@ module com.example.javafxapp {
     requires javafx.base;
 
     exports com.example.javafxapp;
+    
+    opens com.example.javafxapp.model to javafx.base;
+    opens com.example.javafxapp.teacher to javafx.base;
+    opens com.example.javafxapp.student to javafx.base;
 } 

@@ -8,51 +8,51 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 
 import com.example.javafxapp.admin.AdminPage;
+import com.example.javafxapp.service.AuthService;
 import com.example.javafxapp.teacher.TeacherPage;
+import com.example.javafxapp.student.StudentPage;
 
 import javafx.geometry.Insets;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Alert;
 
+//page that handles user login
 public class LoginPage {
+    
+    //shows the login page
     public void show(Stage primaryStage) {
-        //MAIN SETUP
-        //main container
+        //setup the main container with white background
         HBox mainContainer = new HBox();
         mainContainer.setStyle("-fx-background-color: white;");
 
-        //left rectangle in accent color
-        Rectangle leftRectangle = new Rectangle(300, 600); //width and height
-        leftRectangle.setFill(javafx.scene.paint.Color.valueOf("#F0F1FF"));
-        StackPane leftPane = new StackPane(leftRectangle);
+        //create the decorative left side panel
+        Rectangle leftPanel = new Rectangle(300, 600);
+        leftPanel.setFill(javafx.scene.paint.Color.valueOf("#F0F1FF"));
+        StackPane leftSideContainer = new StackPane(leftPanel);
         
-        //right side with login content
-        VBox vbox = new VBox(12);
-        vbox.setAlignment(Pos.CENTER_RIGHT);
-        vbox.setPadding(new Insets(30, 100, 20, 100)); //padding
-        vbox.setStyle("-fx-background-color: white;");
-        //MAIN SETUP END
+        //create the right side login form
+        VBox loginForm = new VBox(12);
+        loginForm.setAlignment(Pos.CENTER_RIGHT);
+        loginForm.setPadding(new Insets(30, 100, 20, 100));
+        loginForm.setStyle("-fx-background-color: white;");
 
-        //COMBO BOX
-        //user type selection
-        Label typeLabel = new Label("Select User Type:");
-        ComboBox<String> userTypeCombo = new ComboBox<>();
-        userTypeCombo.getItems().addAll("Student", "Teacher", "Admin");
-        userTypeCombo.setValue("Student");
+        //setup the user type dropdown
+        Label userTypeLabel = new Label("Select User Type:");
+        ComboBox<String> userTypeDropdown = new ComboBox<>();
+        userTypeDropdown.getItems().addAll("Student", "Teacher", "Admin");
+        userTypeDropdown.setValue("Student");
         
-        //css for combo box
-        userTypeCombo.setStyle(
+        //style the dropdown
+        userTypeDropdown.setStyle(
             "-fx-background-color: white;" +
             "-fx-border-color: #5664F5;" +
             "-fx-border-radius: 6px;"
         );
+        userTypeDropdown.getStyleClass().add("no-scroll-combo-box");
         
-        //add style class to remove scrollbar
-        userTypeCombo.getStyleClass().add("no-scroll-combo-box");
-        
-        //styling cells based off of mouse interactions
-        userTypeCombo.setCellFactory(lv -> new ListCell<String>() {
+        //customize dropdown items appearance
+        userTypeDropdown.setCellFactory(lv -> new ListCell<String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -60,6 +60,7 @@ public class LoginPage {
                     setText(item);
                     setStyle("-fx-background-color: transparent; -fx-text-fill: black;");
                     
+                    //add hover effects
                     setOnMouseEntered(e -> setStyle(
                         "-fx-background-color: #F0F1FF;" +
                         "-fx-border-color: #5664F5;" +
@@ -70,63 +71,57 @@ public class LoginPage {
                 }
             }
         });
-        //END OF COMBO BOX
 
-        //TEXT FIELDS
-        //title display
-        Label titleLabel = new Label("Student Portal Login");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        //create the page title
+        Label pageTitle = new Label("Student Portal Login");
+        pageTitle.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        //username display
+        //setup username field
         Label usernameLabel = new Label("Enter Username:");
-        TextField usernameField = new TextField();
-        usernameField.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-radius: 6px; -fx-background-radius: 6px;");
-        usernameField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            if (isNowFocused) { //if selected change colour
-                usernameField.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-color: #5664F5; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px;");
-            } else { //if not selected change colour to default
-                usernameField.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-color: transparent; -fx-border-radius: 6px; -fx-background-radius: 6px;");
-            }
+        TextField usernameInput = new TextField();
+        String defaultFieldStyle = "-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-radius: 6px; -fx-background-radius: 6px;";
+        String focusedFieldStyle = defaultFieldStyle + "; -fx-border-color: #5664F5; -fx-border-width: 1px;";
+        usernameInput.setStyle(defaultFieldStyle);
+        
+        //add focus effects to username field
+        usernameInput.focusedProperty().addListener((obs, oldValue, newValue) -> {
+            usernameInput.setStyle(newValue ? focusedFieldStyle : defaultFieldStyle);
         });
 
-        //password display
+        //setup password field
         Label passwordLabel = new Label("Enter Password:");
-        PasswordField passwordField = new PasswordField();
-        passwordField.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-radius: 6px; -fx-background-radius: 6px;");
-        passwordField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            if (isNowFocused) { //if selected change colour
-                passwordField.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-color: #5664F5; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px;");
-            } else { //if not selected change colour to default
-                passwordField.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-border-color: transparent; -fx-border-radius: 6px; -fx-background-radius: 6px;");
-            }
+        PasswordField passwordInput = new PasswordField();
+        passwordInput.setStyle(defaultFieldStyle);
+        
+        //add focus effects to password field
+        passwordInput.focusedProperty().addListener((obs, oldValue, newValue) -> {
+            passwordInput.setStyle(newValue ? focusedFieldStyle : defaultFieldStyle);
         });
-        //END OF TEXT FIELDS
 
-        //LOGIN BUTTON
-        //login button setup
+        //create the login button
         Button loginButton = new Button("Login");
         UIUtils.styleButton(loginButton);
 
-        //when press login store data and navigate to appropriate page
+        //handle login button click
         loginButton.setOnAction(e -> {
-            String userType = userTypeCombo.getValue();
-            String username = usernameField.getText();
-            String password = passwordField.getText();
+            String selectedUserType = userTypeDropdown.getValue();
+            String username = usernameInput.getText();
+            String password = passwordInput.getText();
 
-            //if username or password is empty
-            if (username.isEmpty() || password.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR); // produce error
-                alert.setTitle("Login Error"); //error title
-                alert.setHeaderText(null);
-                alert.setContentText("Enter username and password."); //error message
-                alert.showAndWait();
-                return; //stop login
+            //check if login is valid
+            if (!AuthService.validateCredentials(selectedUserType, username, password)) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Login Error");
+                errorAlert.setHeaderText(null);
+                errorAlert.setContentText("Invalid username or password for the selected user type.");
+                errorAlert.showAndWait();
+                return;
             }
 
-            //if both are filled out, login
-            switch(userType) {
+            //go to appropriate page based on user type
+            switch(selectedUserType) {
                 case "Student":
-                    new com.example.javafxapp.student.StudentPage().show(primaryStage, username);
+                    new StudentPage().show(primaryStage, username);
                     break;
                 case "Teacher":
                     new TeacherPage().show(primaryStage, username);
@@ -136,57 +131,57 @@ public class LoginPage {
                     break;
             }
         });
-        //END OF LOGIN BUTTON
 
-        //aligning any interactive elements
-        usernameField.setPrefWidth(200);
-        usernameField.setPrefHeight(30);
-        passwordField.setPrefWidth(200);
-        passwordField.setPrefHeight(30);
-        userTypeCombo.setPrefWidth(200);
+        //set sizes for input fields
+        usernameInput.setPrefWidth(200);
+        usernameInput.setPrefHeight(30);
+        passwordInput.setPrefWidth(200);
+        passwordInput.setPrefHeight(30);
+        userTypeDropdown.setPrefWidth(200);
 
-        titleLabel.setAlignment(Pos.CENTER_LEFT);
-        titleLabel.setMaxWidth(Double.MAX_VALUE);
-        typeLabel.setAlignment(Pos.CENTER_LEFT);
-        typeLabel.setMaxWidth(Double.MAX_VALUE);
+        //align all labels to the left
+        pageTitle.setAlignment(Pos.CENTER_LEFT);
+        pageTitle.setMaxWidth(Double.MAX_VALUE);
+        userTypeLabel.setAlignment(Pos.CENTER_LEFT);
+        userTypeLabel.setMaxWidth(Double.MAX_VALUE);
         usernameLabel.setAlignment(Pos.CENTER_LEFT);
         usernameLabel.setMaxWidth(Double.MAX_VALUE);
         passwordLabel.setAlignment(Pos.CENTER_LEFT);
         passwordLabel.setMaxWidth(Double.MAX_VALUE);
 
-        //hbox to align login button and combobox leftwards
-        HBox userTypeBox = new HBox();
-        userTypeBox.setAlignment(Pos.CENTER_LEFT);
-        userTypeBox.getChildren().add(userTypeCombo);
+        //create containers for dropdown and login button
+        HBox dropdownContainer = new HBox();
+        dropdownContainer.setAlignment(Pos.CENTER_LEFT);
+        dropdownContainer.getChildren().add(userTypeDropdown);
 
-        HBox loginButtonBox = new HBox();
-        loginButtonBox.setAlignment(Pos.CENTER_LEFT);
-        loginButtonBox.getChildren().add(loginButton);
+        HBox buttonContainer = new HBox();
+        buttonContainer.setAlignment(Pos.CENTER_LEFT);
+        buttonContainer.getChildren().add(loginButton);
 
-        //margins
-        VBox.setMargin(titleLabel, new Insets(0, 0, 25, 0));
-        VBox.setMargin(loginButtonBox, new Insets(15, 0, 0, 0));
+        //add spacing around title and button
+        VBox.setMargin(pageTitle, new Insets(0, 0, 25, 0));
+        VBox.setMargin(buttonContainer, new Insets(15, 0, 0, 0));
 
-        vbox.getChildren().addAll(
-            titleLabel,
-            typeLabel,
-            userTypeBox,
+        //add all elements to the form
+        loginForm.getChildren().addAll(
+            pageTitle,
+            userTypeLabel,
+            dropdownContainer,
             usernameLabel,
-            usernameField,
+            usernameInput,
             passwordLabel,
-            passwordField,
-            loginButtonBox
+            passwordInput,
+            buttonContainer
         );
 
-        //adding both sides to the main container
-        mainContainer.getChildren().addAll(leftPane, vbox);
+        //combine left panel and login form
+        mainContainer.getChildren().addAll(leftSideContainer, loginForm);
 
-        Scene scene = new Scene(mainContainer, 800, 600);
-
-        //adding the stylesheet
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        //create and show the scene
+        Scene loginScene = new Scene(mainContainer, 800, 600);
+        loginScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setTitle("Student Portal Login");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 } 

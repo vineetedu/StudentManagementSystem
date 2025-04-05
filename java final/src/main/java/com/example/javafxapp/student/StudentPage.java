@@ -9,53 +9,64 @@ import javafx.geometry.Insets;
 import javafx.scene.text.Text;
 import com.example.javafxapp.LoginPage;
 
+/**
+ * main dashboard for students to access their academic information and tools.
+ */
 public class StudentPage {
-    private Stage window;
-    private String currentUser;
+    private Stage mainWindow;
+    private String studentUsername;
 
     public void show(Stage stage, String user) {
-        this.window = stage;
-        this.currentUser = user;
+        this.mainWindow = stage;
+        this.studentUsername = user;
 
-        HBox root = new HBox();
-        root.setStyle("-fx-background-color: #f5f6fa;");
+        //setup main layout with sidebar and content area
+        HBox pageLayout = new HBox();
+        pageLayout.setStyle("-fx-background-color: #f5f6fa;");
 
-        //sidebar and titles
-        VBox sidebar = new VBox(15);
-        sidebar.setPrefWidth(200);
-        sidebar.setPadding(new Insets(20));
-        sidebar.setStyle("-fx-background-color: #F0F1FF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
+        //create navigation sidebar
+        VBox sideMenu = new VBox(15);
+        sideMenu.setPrefWidth(200);
+        sideMenu.setPadding(new Insets(20));
+        sideMenu.setStyle("-fx-background-color: #F0F1FF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
 
-        Label title = new Label("Student Portal"); //title of sidebar
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        //add page title and menu header
+        Label pageTitle = new Label("Student Portal");
+        pageTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        Label menuHeader = new Label("Quick Access"); //header of sidebar
+        Label menuHeader = new Label("Quick Access");
         menuHeader.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: black;");
 
-        //sidebar buttons for dashboard, profile, settings
+        //create navigation buttons
         Button dashboardBtn = new Button("Dashboard");
-        Button profileBtn = new Button("Profile");
-        Button settingsBtn = new Button("Settings");
+        Button enrollBtn = new Button("Enroll in Courses");
+        Button gradesBtn = new Button("Grades & Attendance");
+        Button assignmentsBtn = new Button("Assignments");
+        Button profileBtn = new Button("Personal Details");
 
-        //applying styles to buttons
-        for (Button btn : new Button[]{dashboardBtn, profileBtn, settingsBtn}) {
+        //style navigation buttons
+        for (Button btn : new Button[]{dashboardBtn, enrollBtn, gradesBtn, assignmentsBtn, profileBtn}) {
             btn.setPrefWidth(160);
             btn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 6;");
             btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color:rgb(219, 221, 247); -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 6;"));
             btn.setOnMouseExited(e -> btn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 6;"));
         }
 
-        //event handlers for buttons on sidebar
-        profileBtn.setOnAction(e -> openProfile());
-        settingsBtn.setOnAction(e -> openSettings());
+        //setup button actions
+        enrollBtn.setOnAction(e -> openEnrollCourses());
+        gradesBtn.setOnAction(e -> openGradesAttendance());
+        assignmentsBtn.setOnAction(e -> openAssignments());
+        profileBtn.setOnAction(e -> openPersonalDetails());
 
-        sidebar.getChildren().addAll(title, new Separator(), menuHeader, dashboardBtn, profileBtn, settingsBtn);
+        //add all elements to sidebar
+        sideMenu.getChildren().addAll(pageTitle, new Separator(), menuHeader, dashboardBtn, enrollBtn, gradesBtn, assignmentsBtn, profileBtn);
 
-        VBox mainContent = new VBox(20);
-        mainContent.setPadding(new Insets(20));
-        mainContent.setStyle("-fx-background-color: white;");
+        //create main content area
+        VBox contentArea = new VBox(20);
+        contentArea.setPadding(new Insets(20));
+        contentArea.setStyle("-fx-background-color: white;");
 
-        //top bar and logout button 
+        //add top bar with logout button
         HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_RIGHT);
         Button logoutBtn = new Button("Log Out");
@@ -65,49 +76,72 @@ public class StudentPage {
         logoutBtn.setOnAction(e -> logout());
         topBar.getChildren().add(logoutBtn);
 
-        //setting up the grid and spacing for cards // options for user
-        GridPane grid = new GridPane();
-        grid.setHgap(15);
-        grid.setVgap(15);
+        //setup grid for feature cards
+        GridPane cardGrid = new GridPane();
+        cardGrid.setHgap(15);
+        cardGrid.setVgap(15);
 
-        //dashboard cards for each option, grades, attendance, messages, profile
-        VBox gradesCard = createDashboardCard("Grades", "Check your latest academic performance.", "View Grades", e -> openGrades());
-        VBox attendanceCard = createDashboardCard("Attendance", "View your class attendance records.", "Check Attendance", e -> openAttendance());
-        VBox messagesCard = createDashboardCard("Messages", "Stay updated with new notifications.", "Open Messages", e -> openNotifications());
-        VBox profileCard = createDashboardCard("Profile", "Update your personal details.", "Edit Profile", e -> openProfile());
+        //create feature cards
+        VBox enrollCard = createDashboardCard(
+            "Enroll in Courses",
+            "Browse and enroll in available courses.",
+            "View Courses",
+            e -> openEnrollCourses()
+        );
 
-        grid.add(gradesCard, 0, 0);
-        grid.add(attendanceCard, 1, 0);
-        grid.add(messagesCard, 0, 1);
-        grid.add(profileCard, 1, 1);
+        VBox gradesCard = createDashboardCard(
+            "Grades & Attendance",
+            "Check your academic performance and attendance.",
+            "View Records",
+            e -> openGradesAttendance()
+        );
 
-        //adding all elements of the ui together
-        mainContent.getChildren().addAll(topBar, grid);
-        root.getChildren().addAll(sidebar, mainContent);
+        VBox assignmentsCard = createDashboardCard(
+            "Assignments",
+            "View and submit your assignments.",
+            "View Assignments",
+            e -> openAssignments()
+        );
 
-        //mainscene setup with size and title
-        Scene mainScene = new Scene(root, 800, 600);
-        window.setTitle("Student Dashboard");
-        window.setScene(mainScene);
-        window.show();
+        VBox profileCard = createDashboardCard(
+            "Personal Details",
+            "Update your personal information.",
+            "Edit Details",
+            e -> openPersonalDetails()
+        );
+
+        //add cards to grid
+        cardGrid.add(enrollCard, 0, 0);
+        cardGrid.add(gradesCard, 1, 0);
+        cardGrid.add(assignmentsCard, 0, 1);
+        cardGrid.add(profileCard, 1, 1);
+
+        //combine all elements
+        contentArea.getChildren().addAll(topBar, cardGrid);
+        pageLayout.getChildren().addAll(sideMenu, contentArea);
+
+        //show the page
+        Scene dashboardScene = new Scene(pageLayout, 800, 600);
+        mainWindow.setTitle("Student Dashboard");
+        mainWindow.setScene(dashboardScene);
+        mainWindow.show();
     }
 
-    //card template for styles and height so everything is consistent
     private VBox createDashboardCard(String title, String desc, String btnText, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
-        VBox card = new VBox(10); //card template
+        VBox card = new VBox(10);
         card.setStyle("-fx-background-color: white; -fx-padding: 15; " +
                       "-fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
         card.setPrefWidth(280);
         card.setPrefHeight(180);
 
-        Label titleLabel = new Label(title); //title of card
+        Label titleLabel = new Label(title);
         titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        Text descText = new Text(desc); //description of card
+        Text descText = new Text(desc);
         descText.setWrappingWidth(250);
         descText.setStyle("-fx-fill: #666;");
 
-        Button actionButton = new Button(btnText); //button for card
+        Button actionButton = new Button(btnText);
         actionButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
         actionButton.setOnMouseEntered(e -> actionButton.setStyle("-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
         actionButton.setOnMouseExited(e -> actionButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
@@ -117,34 +151,24 @@ public class StudentPage {
         return card;
     }
 
-    //button actions and prints to check for success
-    private void openProfile() {
-        System.out.println("opening profile");
-        new StudentProfilePage().show(window, currentUser);
+    //navigation methods
+    private void openEnrollCourses() {
+        new StudentEnrollCoursesPage().show(mainWindow, studentUsername);
     }
 
-    private void openSettings() {
-        System.out.println("opening settings");
-        new StudentSettingsPage().show(window, currentUser);
+    private void openGradesAttendance() {
+        new StudentGradesAttendancePage().show(mainWindow, studentUsername);
     }
 
-    private void openGrades() {
-        System.out.println("opening grades");
-        new StudentGradesPage().show(window, currentUser);
+    private void openAssignments() {
+        new StudentAssignmentsPage().show(mainWindow, studentUsername);
     }
 
-    private void openAttendance() {
-        System.out.println("opening attendance");
-        new StudentAttendancePage().show(window, currentUser);
-    }
-
-    private void openNotifications() {
-        System.out.println("opening notifications");
-        new StudentNotificationsPage().show(window, currentUser);
+    private void openPersonalDetails() {
+        new StudentPersonalDetailsPage().show(mainWindow, studentUsername);
     }
 
     private void logout() {
-        System.out.println("opening login page");
-        new LoginPage().show(window);
+        new LoginPage().show(mainWindow);
     }
 }

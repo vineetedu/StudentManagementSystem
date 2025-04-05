@@ -33,28 +33,25 @@ public class TeacherPage {
         quickAccess.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: black;");
 
         //sidebar options
-        Button dashboardBtn = new Button("Dashboard Overview");
-        Button updateInfoBtn = new Button("Update Personal Info");
+        Button viewCoursesBtn = new Button("View Courses");
         Button inputGradesBtn = new Button("Input Grades");
         Button reportAttendanceBtn = new Button("Report Attendance");
-        Button sendNotificationsBtn = new Button("Send Notifications");
 
         //applying styles to buttons
-        for (Button btn : new Button[]{dashboardBtn, updateInfoBtn, inputGradesBtn, reportAttendanceBtn, sendNotificationsBtn}) {
+        for (Button btn : new Button[]{viewCoursesBtn, inputGradesBtn, reportAttendanceBtn}) {
             btn.setPrefWidth(160);
             btn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;");
             btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color:rgb(219, 221, 247); -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;"));
             btn.setOnMouseExited(e -> btn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;"));
         }
 
-        // Add click handlers for sidebar buttons
-        updateInfoBtn.setOnAction(e -> openUpdateInfo());
+        //add handlers for sidebar buttons
+        viewCoursesBtn.setOnAction(e -> openViewCourses());
         inputGradesBtn.setOnAction(e -> openInputGrades());
         reportAttendanceBtn.setOnAction(e -> openReportAttendance());
-        sendNotificationsBtn.setOnAction(e -> openSendNotifications());
 
-        sidebar.getChildren().addAll(title, new Separator(), quickAccess, dashboardBtn, updateInfoBtn, 
-                                   inputGradesBtn, reportAttendanceBtn, sendNotificationsBtn);
+        sidebar.getChildren().addAll(title, new Separator(), quickAccess, viewCoursesBtn, 
+                                   inputGradesBtn, reportAttendanceBtn);
 
         VBox mainContent = new VBox(20);
         mainContent.setPadding(new Insets(20));
@@ -65,7 +62,7 @@ public class TeacherPage {
         topBar.setAlignment(Pos.CENTER_RIGHT);
         Button logoutBtn = new Button("Log Out");
         logoutBtn.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
-        logoutBtn.setOnMouseEntered(e -> logoutBtn.setStyle("-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
+        logoutBtn.setOnMouseEntered(e -> logoutBtn.setStyle("-fx-background-color: #6B7AFF; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
         logoutBtn.setOnMouseExited(e -> logoutBtn.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
         logoutBtn.setOnAction(e -> logout());
         topBar.getChildren().add(logoutBtn);
@@ -76,38 +73,30 @@ public class TeacherPage {
         grid.setVgap(15);
 
         //teacher function cards
-        VBox updateInfoCard = createDashboardCard(
-            "Update Personal Info",
-            "Keep your personal information up to date.",
-            "Update Info",
-            e -> openUpdateInfo()
+        VBox viewCoursesCard = createDashboardCard(
+            "View Courses",
+            "View your assigned courses and enrolled students.",
+            "View Now",
+            e -> openViewCourses()
         );
 
         VBox inputGradesCard = createDashboardCard(
             "Input Grades",
-            "Enter and update student grades easily.",
+            "Enter and update student grades for your courses.",
             "Enter Grades",
             e -> openInputGrades()
         );
 
         VBox reportAttendanceCard = createDashboardCard(
             "Report Attendance",
-            "Track and report student attendance.",
+            "Track and report student attendance by course.",
             "Report Now",
             e -> openReportAttendance()
         );
 
-        VBox sendNotificationsCard = createDashboardCard(
-            "Send Notifications",
-            "Notify students about assignments and updates.",
-            "Send Now",
-            e -> openSendNotifications()
-        );
-
-        grid.add(updateInfoCard, 0, 0);
+        grid.add(viewCoursesCard, 0, 0);
         grid.add(inputGradesCard, 1, 0);
         grid.add(reportAttendanceCard, 0, 1);
-        grid.add(sendNotificationsCard, 1, 1);
 
         mainContent.getChildren().addAll(topBar, grid);
         root.getChildren().addAll(sidebar, mainContent);
@@ -134,7 +123,7 @@ public class TeacherPage {
 
         Button actionButton = new Button(btnText);
         actionButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
-        actionButton.setOnMouseEntered(e -> actionButton.setStyle("-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
+        actionButton.setOnMouseEntered(e -> actionButton.setStyle("-fx-background-color: #6B7AFF; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
         actionButton.setOnMouseExited(e -> actionButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
         actionButton.setOnAction(action);
 
@@ -142,28 +131,19 @@ public class TeacherPage {
         return card;
     }
 
-    private void openUpdateInfo() {
-        System.out.println("Opening update info page");
-        new TeacherUpdateInfoPage().show(window, currentUser);
+    private void openViewCourses() {
+        new TeacherViewCoursesPage().show(window, currentUser);
     }
 
     private void openInputGrades() {
-        System.out.println("Opening input grades page");
         new TeacherInputGradesPage().show(window, currentUser);
     }
 
     private void openReportAttendance() {
-        System.out.println("Opening report attendance page");
-        new TeacherReportAttendancePage().show(window, currentUser);
-    }
-
-    private void openSendNotifications() {
-        System.out.println("Opening send notifications page");
-        new TeacherSendNotificationsPage().show(window, currentUser);
+        new TeacherAttendancePage().show(window, currentUser);
     }
 
     private void logout() {
-        System.out.println("Logging out to login page");
         new LoginPage().show(window);
     }
 } 
