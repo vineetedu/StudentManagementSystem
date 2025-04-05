@@ -38,14 +38,14 @@ public class StudentPage {
         menuHeader.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: black;");
 
         //create navigation buttons
-        Button dashboardBtn = new Button("Dashboard");
-        Button enrollBtn = new Button("Enroll in Courses");
-        Button gradesBtn = new Button("Grades & Attendance");
-        Button assignmentsBtn = new Button("Assignments");
-        Button profileBtn = new Button("Personal Details");
+        Button dashboardButton = new Button("Dashboard");
+        Button enrollButton = new Button("View Courses");
+        Button gradesButton = new Button("View Records");
+        Button assignmentsButton = new Button("Assignments");
+        Button profileButton = new Button("Edit Details");
 
         //style navigation buttons
-        for (Button btn : new Button[]{dashboardBtn, enrollBtn, gradesBtn, assignmentsBtn, profileBtn}) {
+        for (Button btn : new Button[]{dashboardButton, enrollButton, gradesButton, assignmentsButton, profileButton}) {
             btn.setPrefWidth(160);
             btn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 6;");
             btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color:rgb(219, 221, 247); -fx-text-fill: black; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 6;"));
@@ -53,13 +53,13 @@ public class StudentPage {
         }
 
         //setup button actions
-        enrollBtn.setOnAction(e -> openEnrollCourses());
-        gradesBtn.setOnAction(e -> openGradesAttendance());
-        assignmentsBtn.setOnAction(e -> openAssignments());
-        profileBtn.setOnAction(e -> openPersonalDetails());
+        enrollButton.setOnAction(e -> openEnrollCourses());
+        gradesButton.setOnAction(e -> openGradesAttendance());
+        assignmentsButton.setOnAction(e -> openAssignments());
+        profileButton.setOnAction(e -> openPersonalDetails());
 
         //add all elements to sidebar
-        sideMenu.getChildren().addAll(pageTitle, new Separator(), menuHeader, dashboardBtn, enrollBtn, gradesBtn, assignmentsBtn, profileBtn);
+        sideMenu.getChildren().addAll(pageTitle, new Separator(), menuHeader, dashboardButton, enrollButton, gradesButton, assignmentsButton, profileButton);
 
         //create main content area
         VBox contentArea = new VBox(20);
@@ -69,12 +69,12 @@ public class StudentPage {
         //add top bar with logout button
         HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_RIGHT);
-        Button logoutBtn = new Button("Log Out");
-        logoutBtn.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
-        logoutBtn.setOnMouseEntered(e -> logoutBtn.setStyle("-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
-        logoutBtn.setOnMouseExited(e -> logoutBtn.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
-        logoutBtn.setOnAction(e -> logout());
-        topBar.getChildren().add(logoutBtn);
+        Button logoutButton = new Button("Log Out");
+        logoutButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
+        logoutButton.setOnMouseEntered(e -> logoutButton.setStyle("-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
+        logoutButton.setOnMouseExited(e -> logoutButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
+        logoutButton.setOnAction(e -> logout());
+        topBar.getChildren().add(logoutButton);
 
         //setup grid for feature cards
         GridPane cardGrid = new GridPane();

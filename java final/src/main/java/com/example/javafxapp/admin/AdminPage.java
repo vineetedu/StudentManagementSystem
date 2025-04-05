@@ -8,94 +8,107 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.scene.text.Text;
 import com.example.javafxapp.LoginPage;
+import com.example.javafxapp.UIUtils;
 
-//main admin dashboard page
+/**
+ * this is the main admin dashboard
+ */
 public class AdminPage {
-    private Stage mainWindow;
-    private String adminUsername;
+    //main window of the application
+    private Stage window;
+    
+    //keep track of who's logged in
+    private String currentUser;
 
-    //display the admin dashboard
+    //this shows the admin dashboard with all its features
     public void show(Stage stage, String user) {
-        this.mainWindow = stage;
-        this.adminUsername = user;
+        //store the window and user info for later
+        this.window = stage;
+        this.currentUser = user;
 
-        //setup the main layout
+        //setup the main layout with a nice background
         HBox pageLayout = new HBox();
         pageLayout.setStyle("-fx-background-color: #f5f6fa;");
 
-        //create the left sidebar menu
+        //create a cool sidebar menu on the left
+        VBox sideMenu = createSideMenu();
+
+        //create the main content area where all the action happens
+        VBox contentArea = createContentArea();
+
+        //put it all together
+        pageLayout.getChildren().addAll(sideMenu, contentArea);
+
+        //show our beautiful dashboard
+        Scene dashboardScene = new Scene(pageLayout, 800, 600);
+        window.setTitle("Admin Dashboard");
+        window.setScene(dashboardScene);
+        window.show();
+    }
+
+    //creates the sidebar menu with navigation buttons
+    private VBox createSideMenu() {
+        //setup the sidebar container
         VBox sideMenu = new VBox(15);
         sideMenu.setPrefWidth(200);
         sideMenu.setPadding(new Insets(20));
         sideMenu.setStyle("-fx-background-color: #F0F1FF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
 
-        //add the page title
+        //add title
         Label pageTitle = new Label("Admin Portal");
         pageTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        //create menu buttons
+        //create all our menu buttons
+        Button dashboardButton = new Button("Dashboard");
         Button updateAccountButton = new Button("Update Account");
-        Button addDeleteButton = new Button("Add/Delete Account");
         Button assignTeacherButton = new Button("Assign Teacher");
         Button generateReportButton = new Button("Generate Report");
 
-        //style all menu buttons
-        Button[] menuButtons = {updateAccountButton, addDeleteButton, assignTeacherButton, generateReportButton};
-        String defaultButtonStyle = "-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;";
-        String hoverButtonStyle = "-fx-background-color:rgb(219, 221, 247); -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;";
-        
+        //make all buttons look consistent
+        Button[] menuButtons = {dashboardButton, updateAccountButton, assignTeacherButton, generateReportButton};
         for (Button menuButton : menuButtons) {
-            menuButton.setPrefWidth(160);
-            menuButton.setStyle(defaultButtonStyle);
-            menuButton.setOnMouseEntered(e -> menuButton.setStyle(hoverButtonStyle));
-            menuButton.setOnMouseExited(e -> menuButton.setStyle(defaultButtonStyle));
+            styleMenuButton(menuButton);
         }
 
-        //setup button actions
+        //setup what happens when buttons are clicked
         updateAccountButton.setOnAction(e -> openUpdateAccount());
-        addDeleteButton.setOnAction(e -> openAddDelete());
         assignTeacherButton.setOnAction(e -> openAssignTeacher());
         generateReportButton.setOnAction(e -> openGenerateReport());
 
-        //add all items to side menu
-        sideMenu.getChildren().addAll(pageTitle, new Separator(), updateAccountButton, addDeleteButton, assignTeacherButton, generateReportButton);
+        //add everything to the sidebar
+        sideMenu.getChildren().addAll(pageTitle, new Separator(), dashboardButton, updateAccountButton, assignTeacherButton, generateReportButton);
+        
+        return sideMenu;
+    }
 
-        //create main content area
+    //creates the main content area with feature cards
+    private VBox createContentArea() {
+        //setup the content container
         VBox contentArea = new VBox(20);
         contentArea.setPadding(new Insets(20));
         contentArea.setStyle("-fx-background-color: white;");
 
-        //create top bar with logout button
+        //create top bar with logout
         HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_RIGHT);
         
+        //add a logout button
         Button logoutButton = new Button("Log Out");
-        String logoutDefaultStyle = "-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;";
-        String logoutHoverStyle = "-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;";
-        logoutButton.setStyle(logoutDefaultStyle);
-        logoutButton.setOnMouseEntered(e -> logoutButton.setStyle(logoutHoverStyle));
-        logoutButton.setOnMouseExited(e -> logoutButton.setStyle(logoutDefaultStyle));
+        UIUtils.styleButton(logoutButton);
         logoutButton.setOnAction(e -> logout());
         topBar.getChildren().add(logoutButton);
 
-        //setup grid for feature cards
+        //create a grid for our feature cards
         GridPane cardGrid = new GridPane();
         cardGrid.setHgap(15);
         cardGrid.setVgap(15);
 
-        //create feature cards
+        //create cards for each feature
         VBox updateAccountCard = makeFeatureCard(
             "Update Account",
             "Modify student and teacher details.",
             "Start",
             e -> openUpdateAccount()
-        );
-
-        VBox addDeleteCard = makeFeatureCard(
-            "Add/Delete Account",
-            "Manage student and teacher accounts.",
-            "Manage",
-            e -> openAddDelete()
         );
 
         VBox assignTeacherCard = makeFeatureCard(
@@ -112,73 +125,79 @@ public class AdminPage {
             e -> openGenerateReport()
         );
 
-        //add cards to grid
+        //arrange cards in the grid
         cardGrid.add(updateAccountCard, 0, 0);
-        cardGrid.add(addDeleteCard, 1, 0);
-        cardGrid.add(assignTeacherCard, 0, 1);
-        cardGrid.add(generateReportCard, 1, 1);
+        cardGrid.add(assignTeacherCard, 1, 0);
+        cardGrid.add(generateReportCard, 0, 1);
 
-        //combine all elements
+        //put everything together
         contentArea.getChildren().addAll(topBar, cardGrid);
-        pageLayout.getChildren().addAll(sideMenu, contentArea);
-
-        //show the page
-        Scene dashboardScene = new Scene(pageLayout, 800, 600);
-        mainWindow.setTitle("Admin Dashboard");
-        mainWindow.setScene(dashboardScene);
-        mainWindow.show();
+        
+        return contentArea;
     }
 
-    //create a card for dashboard features
+    //styles a menu button 
+    private void styleMenuButton(Button button) {
+        button.setPrefWidth(160);
+        String defaultStyle = "-fx-background-color: white; " +
+                            "-fx-text-fill: black; " +
+                            "-fx-font-size: 12px; " +
+                            "-fx-padding: 10 20; " +
+                            "-fx-background-radius: 6;";
+        String hoverStyle = "-fx-background-color: rgb(219, 221, 247); " +
+                          "-fx-text-fill: black; " +
+                          "-fx-font-size: 12px; " +
+                          "-fx-padding: 10 20; " +
+                          "-fx-background-radius: 6;";
+        button.setStyle(defaultStyle);
+        button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
+        button.setOnMouseExited(e -> button.setStyle(defaultStyle));
+    }
+
+    //creates a  card foour dashboard features
     private VBox makeFeatureCard(String cardTitle, String description, String buttonText, javafx.event.EventHandler<javafx.event.ActionEvent> buttonAction) {
-        //setup card container
+        //setup the card container
         VBox card = new VBox(10);
-        card.setStyle("-fx-background-color: white; -fx-padding: 15; " +
-                     "-fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
+        card.setStyle("-fx-background-color: white; " +
+                     "-fx-padding: 15; " +
+                     "-fx-background-radius: 10; " +
+                     "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
         card.setPrefWidth(280);
         card.setPrefHeight(180);
 
-        //add card title
+        //add a title
         Label titleText = new Label(cardTitle);
         titleText.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        //add description
+        //add some descriptive text
         Text descriptionText = new Text(description);
         descriptionText.setWrappingWidth(250);
         descriptionText.setStyle("-fx-fill: #666;");
 
-        //add action button
+        //add a button
         Button cardButton = new Button(buttonText);
-        String buttonDefaultStyle = "-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;";
-        String buttonHoverStyle = "-fx-background-color: #6790F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;";
-        cardButton.setStyle(buttonDefaultStyle);
-        cardButton.setOnMouseEntered(e -> cardButton.setStyle(buttonHoverStyle));
-        cardButton.setOnMouseExited(e -> cardButton.setStyle(buttonDefaultStyle));
+        UIUtils.styleButton(cardButton);
         cardButton.setOnAction(buttonAction);
 
-        //combine all elements
+        //put the card together
         card.getChildren().addAll(titleText, descriptionText, cardButton);
         return card;
     }
 
-    //navigation methods
+    // handle navigation to different pages
     private void openUpdateAccount() {
-        new AdminUpdateAccountPage().show(mainWindow, adminUsername);
-    }
-
-    private void openAddDelete() {
-        new AdminAddDeletePage().show(mainWindow, adminUsername);
+        new AdminUpdateAccountPage().show(window, currentUser);
     }
 
     private void openAssignTeacher() {
-        new AdminAssignTeacherPage().show(mainWindow, adminUsername);
+        new AdminAssignTeacherPage().show(window, currentUser);
     }
 
     private void openGenerateReport() {
-        new AdminGenerateReportPage().show(mainWindow, adminUsername);
+        new AdminGenerateReportPage().show(window, currentUser);
     }
 
     private void logout() {
-        new LoginPage().show(mainWindow);
+        new LoginPage().show(window);
     }
 } 

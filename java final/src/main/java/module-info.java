@@ -9,4 +9,5 @@ module com.example.javafxapp {
     opens com.example.javafxapp.model to javafx.base;
     opens com.example.javafxapp.teacher to javafx.base;
     opens com.example.javafxapp.student to javafx.base;
+    opens com.example.javafxapp.admin to javafx.base;
 } 

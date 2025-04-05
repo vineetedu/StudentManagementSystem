@@ -33,12 +33,13 @@ public class TeacherPage {
         quickAccess.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: black;");
 
         //sidebar options
-        Button viewCoursesBtn = new Button("View Courses");
-        Button inputGradesBtn = new Button("Input Grades");
-        Button reportAttendanceBtn = new Button("Report Attendance");
+        Button dashboardButton = new Button("Dashboard");
+        Button viewCoursesButton = new Button("View Courses");
+        Button inputGradesButton = new Button("Input Grades");
+        Button reportAttendanceButton = new Button("Report Attendance");
 
         //applying styles to buttons
-        for (Button btn : new Button[]{viewCoursesBtn, inputGradesBtn, reportAttendanceBtn}) {
+        for (Button btn : new Button[]{dashboardButton,viewCoursesButton, inputGradesButton, reportAttendanceButton}) {
             btn.setPrefWidth(160);
             btn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;");
             btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color:rgb(219, 221, 247); -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6;"));
@@ -46,12 +47,12 @@ public class TeacherPage {
         }
 
         //add handlers for sidebar buttons
-        viewCoursesBtn.setOnAction(e -> openViewCourses());
-        inputGradesBtn.setOnAction(e -> openInputGrades());
-        reportAttendanceBtn.setOnAction(e -> openReportAttendance());
+        viewCoursesButton.setOnAction(e -> openViewCourses());
+        inputGradesButton.setOnAction(e -> openInputGrades());
+        reportAttendanceButton.setOnAction(e -> openReportAttendance());
 
-        sidebar.getChildren().addAll(title, new Separator(), quickAccess, viewCoursesBtn, 
-                                   inputGradesBtn, reportAttendanceBtn);
+        sidebar.getChildren().addAll(title, new Separator(), quickAccess, viewCoursesButton, 
+                                   inputGradesButton, reportAttendanceButton);
 
         VBox mainContent = new VBox(20);
         mainContent.setPadding(new Insets(20));
@@ -60,12 +61,12 @@ public class TeacherPage {
         //top bar with logout
         HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_RIGHT);
-        Button logoutBtn = new Button("Log Out");
-        logoutBtn.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
-        logoutBtn.setOnMouseEntered(e -> logoutBtn.setStyle("-fx-background-color: #6B7AFF; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
-        logoutBtn.setOnMouseExited(e -> logoutBtn.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
-        logoutBtn.setOnAction(e -> logout());
-        topBar.getChildren().add(logoutBtn);
+        Button logoutButton = new Button("Log Out");
+        logoutButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;");
+        logoutButton.setOnMouseEntered(e -> logoutButton.setStyle("-fx-background-color: #6B7AFF; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
+        logoutButton.setOnMouseExited(e -> logoutButton.setStyle("-fx-background-color: #5664F5; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6;"));
+        logoutButton.setOnAction(e -> logout());
+        topBar.getChildren().add(logoutButton);
 
         //grid for teacher cards
         GridPane grid = new GridPane();

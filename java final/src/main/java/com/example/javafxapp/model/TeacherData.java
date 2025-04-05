@@ -47,6 +47,14 @@ public class TeacherData {
         }
     }
 
+    //remove a course from teacher's assigned courses
+    public void removeCourse(String course) {
+        assignedCourses.remove(course);
+        courseStudents.remove(course);
+        courseGrades.remove(course);
+        courseAttendance.remove(course);
+    }
+
     //get list of courses assigned to teacher
     public List<String> getAssignedCourses() {
         return assignedCourses;

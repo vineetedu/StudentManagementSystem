@@ -26,7 +26,7 @@ public class LoginPage {
         HBox mainContainer = new HBox();
         mainContainer.setStyle("-fx-background-color: white;");
 
-        //create the decorative left side panel
+        //create the left side panel
         Rectangle leftPanel = new Rectangle(300, 600);
         leftPanel.setFill(javafx.scene.paint.Color.valueOf("#F0F1FF"));
         StackPane leftSideContainer = new StackPane(leftPanel);
